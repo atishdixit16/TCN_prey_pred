@@ -6,6 +6,9 @@ from TCN.prey_pred_model.model import TCN
 from TCN.prey_pred_model.utils import data_generator
 from TCN.prey_pred_model.prey_pred_data import *
 import matplotlib.pyplot as plt
+import os
+
+os.system('makdir rand_init')
 
 parser = argparse.ArgumentParser(description='Sequence Modeling - The Adding Problem')
 parser.add_argument('--batch_size', type=int, default=100, metavar='N',
@@ -122,7 +125,7 @@ plt.xlabel('epoch')
 plt.ylabel('losses')
 plt.title('Trainng and Validation Losses')
 plt.legend(['Training Loss','Validation Loss'])
-plt.savefig('prey_pred_losses_randInit.jpg')
+plt.savefig('rand_init/prey_pred_losses_randInit.jpg')
 
 data = prey_pred_data(total_examples, seq_length)
 X_test = data[0][training_examples:,:,:]
@@ -137,4 +140,4 @@ plt.plot(range(total_examples),data[1][:,1].cpu().numpy())
 plt.plot(range(training_examples,total_examples),output[:,0].cpu().detach().numpy(), '--')
 plt.plot(range(training_examples,total_examples),output[:,1].cpu().detach().numpy(), '--')
 plt.legend(['True prey population', 'True predator population', 'Predicted prey population', 'Predicted predator population'] ,loc='center left')
-plt.savefig('prey_pred_prediction_vizualization_randInit.jpg')
+plt.savefig('rand_init/prey_pred_prediction_vizualization_randInit.jpg')

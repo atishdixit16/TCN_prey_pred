@@ -45,4 +45,3 @@ def prey_pred_data_randinit(examples, seq_length):
     X = stack_data[:,:,:-1]
     Y = stack_data[:,:,-1]
     return X,Y
-

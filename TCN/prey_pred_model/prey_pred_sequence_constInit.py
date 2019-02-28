@@ -2,9 +2,9 @@ import torch
 import argparse
 import torch.optim as optim
 import torch.nn.functional as F
-from TCN.adding_problem.model import TCN
-from TCN.adding_problem.utils import data_generator
-from TCN.adding_problem.prey_pred_data import *
+from TCN.prey_pred_model.model import TCN
+from TCN.prey_pred_model.utils import data_generator
+from TCN.prey_pred_model.prey_pred_data import *
 import matplotlib.pyplot as plt
 import os
 

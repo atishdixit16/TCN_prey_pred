@@ -8,7 +8,7 @@ from TCN.prey_pred_model.prey_pred_data import *
 import matplotlib.pyplot as plt
 import os
 
-os.system('makdir rand_init')
+os.system('mkdir rand_init')
 
 parser = argparse.ArgumentParser(description='Sequence Modeling - The Adding Problem')
 parser.add_argument('--batch_size', type=int, default=100, metavar='N',
@@ -19,7 +19,7 @@ parser.add_argument('--dropout', type=float, default=0.0,
                     help='dropout applied to layers (default: 0.0)')
 parser.add_argument('--clip', type=float, default=-1,
                     help='gradient clip, -1 means no clip (default: -1)')
-parser.add_argument('--epochs', type=int, default=99999,
+parser.add_argument('--epochs', type=int, default=1000,
                     help='upper epoch limit (default: 100)')
 parser.add_argument('--ksize', type=int, default=7,
                     help='kernel size (default: 7)')
@@ -29,7 +29,7 @@ parser.add_argument('--seq_len', type=int, default=10,
                     help='sequence length (default: 10)')
 parser.add_argument('--log-interval', type=int, default=100, metavar='N',
                     help='report interval (default: 100')
-parser.add_argument('--lr', type=float, default=1e-4,
+parser.add_argument('--lr', type=float, default=1e-3,
                     help='initial learning rate (default: 4e-3)')
 parser.add_argument('--optim', type=str, default='Adam',
                     help='optimizer to use (default: Adam)')

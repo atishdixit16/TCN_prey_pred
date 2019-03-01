@@ -21,7 +21,7 @@ def prey_pred_data(examples, seq_length):
         return
     tmin = 0.0     # starting t value
     tmax = 200.0   # final t value
-    yinit = [47,150]      # initial value of x
+    yinit = [47,56]      # initial value of x
     t  = np.linspace(tmin, tmax, N)   # time grid
     ysol = odeint(dfunc, yinit, t)
     stack_data  = torch.zeros(examples, 2, seq_length+1)

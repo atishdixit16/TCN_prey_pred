@@ -15,13 +15,13 @@ def dfunc (y, t):
     return [f0, f1]
 
 def prey_pred_data(examples, seq_length):
-    N = 2000  # Number of data points
+    N = 3000  # Number of data points
     if N < (examples+seq_length+1):
         print('No of examples should be smaller than 2000-seq_length-1')
         return
     tmin = 0.0     # starting t value
     tmax = 200.0   # final t value
-    yinit = [47,56]      # initial value of x
+    yinit = [80,50]      # initial value of x
     t  = np.linspace(tmin, tmax, N)   # time grid
     ysol = odeint(dfunc, yinit, t)
     stack_data  = torch.zeros(examples, 2, seq_length+1)
@@ -35,12 +35,12 @@ def prey_pred_data(examples, seq_length):
     return X,Y
 
 def prey_pred_data_init(examples, seq_length, yinit):
-    N = 2000  # Number of data points
+    N = 3000  # Number of data points
     if N < (examples+seq_length+1):
-        print('No of examples should be smaller than 2000-seq_length-1')
+        print('No of examples should be smaller than 3000-seq_length-1')
         return
     tmin = 0.0     # starting t value
-    tmax = 200.0   # final t value
+    tmax = 800.0   # final t value
     t  = np.linspace(tmin, tmax, N)   # time grid
     ysol = odeint(dfunc, yinit, t)
     stack_data  = torch.zeros(examples, 2, seq_length+1)
@@ -54,7 +54,7 @@ def prey_pred_data_init(examples, seq_length, yinit):
     return stack_data
 
 def prey_pred_data_randinit(examples, seq_length):
-    batch_no = 10
+    batch_no = 100
     batch_samples = m.floor(examples / batch_no)
     full_data = torch.zeros((examples, 2, seq_length+1))
     a = 50
@@ -67,6 +67,7 @@ def prey_pred_data_randinit(examples, seq_length):
         yinit = [a + (b-a)*torch.rand(1) , a + (b-a)*torch.rand(1)]
         batch_data = prey_pred_data_init( (examples%batch_no) , seq_length, yinit)
         full_data[ (batch_no*(i+1)): ] = batch_data
+    full_data = full_data[torch.randperm(examples)]
     X = full_data[:,:,:-1]
     Y = full_data[:,:,-1]
     return X,Y

@@ -19,7 +19,7 @@ parser.add_argument('--dropout', type=float, default=0.0,
                     help='dropout applied to layers (default: 0.0)')
 parser.add_argument('--clip', type=float, default=-1,
                     help='gradient clip, -1 means no clip (default: -1)')
-parser.add_argument('--epochs', type=int, default=1000,
+parser.add_argument('--epochs', type=int, default=6000,
                     help='upper epoch limit (default: 100)')
 parser.add_argument('--ksize', type=int, default=7,
                     help='kernel size (default: 7)')
@@ -29,7 +29,7 @@ parser.add_argument('--seq_len', type=int, default=10,
                     help='sequence length (default: 10)')
 parser.add_argument('--log-interval', type=int, default=100, metavar='N',
                     help='report interval (default: 100')
-parser.add_argument('--lr', type=float, default=1e-3,
+parser.add_argument('--lr', type=float, default=2e-4,
                     help='initial learning rate (default: 4e-3)')
 parser.add_argument('--optim', type=str, default='Adam',
                     help='optimizer to use (default: Adam)')
@@ -139,5 +139,6 @@ plt.plot(range(total_examples),data[1][:,0].cpu().numpy())
 plt.plot(range(total_examples),data[1][:,1].cpu().numpy())
 plt.plot(range(training_examples,total_examples),output[:,0].cpu().detach().numpy(), '--')
 plt.plot(range(training_examples,total_examples),output[:,1].cpu().detach().numpy(), '--')
+plt.grid(True)
 plt.legend(['True prey population', 'True predator population', 'Predicted prey population', 'Predicted predator population'] ,loc='center left')
 plt.savefig('rand_init/prey_pred_prediction_vizualization_randInit.jpg')

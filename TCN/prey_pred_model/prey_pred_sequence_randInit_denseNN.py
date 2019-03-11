@@ -30,7 +30,7 @@ parser.add_argument('--seq_len', type=int, default=10,
                     help='sequence length (default: 10)')
 parser.add_argument('--log-interval', type=int, default=100, metavar='N',
                     help='report interval (default: 100')
-parser.add_argument('--lr', type=float, default=5e-5,
+parser.add_argument('--lr', type=float, default=4e-3,
                     help='initial learning rate (default: 4e-3)')
 parser.add_argument('--optim', type=str, default='Adam',
                     help='optimizer to use (default: Adam)')
@@ -68,7 +68,8 @@ Y_test = data[1][training_examples:,:]
 channel_sizes = [args.nhid]*args.levels
 kernel_size = args.ksize
 dropout = args.dropout
-model = DenseNN(seq_length)
+model = DenseNN_init(seq_length)
+
 
 if args.cuda:
     model.cuda()

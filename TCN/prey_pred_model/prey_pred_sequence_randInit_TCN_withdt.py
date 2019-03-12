@@ -29,7 +29,7 @@ parser.add_argument('--seq_len', type=int, default=10,
                     help='sequence length (default: 10)')
 parser.add_argument('--log-interval', type=int, default=100, metavar='N',
                     help='report interval (default: 100')
-parser.add_argument('--lr', type=float, default=2e-4,
+parser.add_argument('--lr', type=float, default=1e-4,
                     help='initial learning rate (default: 4e-3)')
 parser.add_argument('--optim', type=str, default='Adam',
                     help='optimizer to use (default: Adam)')
@@ -128,6 +128,9 @@ plt.legend(['Training Loss','Validation Loss'])
 plt.savefig('rand_init/prey_pred_losses_randInit_withdt.jpg')
 
 data = prey_pred_data_init(total_examples, seq_length, [80,50])
+X = data[:,:,:-1]
+Y = data[:,:,-1]
+data = (X,Y)
 X_test = data[0][training_examples:,:,:]
 if args.cuda:
     X_test = X_test.cuda()

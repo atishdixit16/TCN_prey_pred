@@ -40,7 +40,7 @@ def prey_pred_data_init_withdt(examples, seq_length, yinit):
         print('No of examples should be smaller than 3000-seq_length-1')
         return
     tmin = 0.0     # starting t value
-    tmax = 800.0   # final t value
+    tmax = 200.0   # final t value
     t  = np.linspace(tmin, tmax, N)   # time grid
     ysol = odeint(dfunc, yinit, t)
     stack_data  = torch.zeros(examples, 2, seq_length+2)
@@ -59,7 +59,7 @@ def prey_pred_data_init(examples, seq_length, yinit):
         print('No of examples should be smaller than 3000-seq_length-1')
         return
     tmin = 0.0     # starting t value
-    tmax = 800.0   # final t value
+    tmax = 200.0   # final t value
     t  = np.linspace(tmin, tmax, N)   # time grid
     ysol = odeint(dfunc, yinit, t)
     stack_data  = torch.zeros(examples, 2, seq_length+1)

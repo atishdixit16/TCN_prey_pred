@@ -30,7 +30,7 @@ parser.add_argument('--seq_len', type=int, default=10,
                     help='sequence length (default: 10)')
 parser.add_argument('--log-interval', type=int, default=100, metavar='N',
                     help='report interval (default: 100')
-parser.add_argument('--lr', type=float, default=4e-3,
+parser.add_argument('--lr', type=float, default=1e-4,
                     help='initial learning rate (default: 4e-3)')
 parser.add_argument('--optim', type=str, default='Adam',
                     help='optimizer to use (default: Adam)')
@@ -51,14 +51,14 @@ else:
 input_channels = 2
 n_classes = 2
 batch_size = args.batch_size
-seq_length = args.seq_len
+seq_length = args.seq_len 
 epochs = args.epochs
 total_examples = 1500
 training_examples = 800
 
 print(args)
 print("Producing data...")
-data = prey_pred_data_randinit(total_examples, seq_length)
+data = prey_pred_data_randinit_withdt(total_examples, seq_length)
 X_train = data[0][:training_examples,:,:]
 Y_train = data[1][:training_examples,:]
 X_test = data[0][training_examples:,:,:]
@@ -68,7 +68,10 @@ Y_test = data[1][training_examples:,:]
 channel_sizes = [args.nhid]*args.levels
 kernel_size = args.ksize
 dropout = args.dropout
-model = DenseNN_init(seq_length)
+# with dt
+model = DenseNN_init(seq_length + 1)
+# # without dt
+# model = DenseNN_init(seq_length)
 
 
 if args.cuda:
@@ -96,7 +99,10 @@ for epoch in range(1, epochs+1):
         else:
             x, y = X_train[i:(i+batch_size)], Y_train[i:(i+batch_size)]
         optimizer.zero_grad()
-        output = model(x, seq_length)
+        # with dt
+        output = model(x, seq_length+1)
+        # # without dt
+        # output = model(x, seq_length)
         loss = F.mse_loss(output, y)
         loss.backward()
         if args.clip > 0:
@@ -115,7 +121,10 @@ for epoch in range(1, epochs+1):
     train_loss_data.append(mse_loss)
     #test
     model.eval()
-    output = model(X_test, seq_length)
+    # with dt
+    output = model(X_test, seq_length + 1)
+    # # without dt
+    # output = model(X_test, seq_length )
     test_loss = F.mse_loss(output, Y_test)
     print('Epoch ({}) Test set: Average loss: {:.6f}\n'.format(epoch, test_loss.data[0]))
     val_loss_data.append(test_loss)
@@ -127,14 +136,24 @@ plt.xlabel('epoch')
 plt.ylabel('losses')
 plt.title('Trainng and Validation Losses')
 plt.legend(['Training Loss','Validation Loss'])
-plt.savefig('rand_init_denseNN/prey_pred_losses_randInit.jpg')
+plt.savefig('rand_init_denseNN/prey_pred_losses_randInit_withdt.jpg')
 
-data = prey_pred_data(total_examples, seq_length)
-X_test = data[0][training_examples:,:,:]
+# with dt
+stack_data = prey_pred_data_init_withdt(total_examples, seq_length, [80,50])
+X = stack_data[:,:,:-1]
+y = stack_data[:,:,-1]
+data = (x,y)
+X_test = X[training_examples:,:,:]
+## without dt
+#data = prey_pred_data_init_withdt(total_examples, seq_length, [80,50])
+# X_test = X[training_examples:,:,:]
 if args.cuda:
     X_test = X_test.cuda()
 model.eval()
-output = model(X_test, seq_length)
+# with dt
+output = model(X_test, seq_length + 1)
+# # without dt
+# output = model(X_test, seq_length )
 
 plt.figure()
 plt.plot(range(total_examples),data[1][:,0].cpu().numpy())
@@ -143,4 +162,4 @@ plt.plot(range(training_examples,total_examples),output[:,0].cpu().detach().nump
 plt.plot(range(training_examples,total_examples),output[:,1].cpu().detach().numpy(), '--')
 plt.grid(True)
 plt.legend(['True prey population', 'True predator population', 'Predicted prey population', 'Predicted predator population'] ,loc='center left')
-plt.savefig('rand_init_denseNN/prey_pred_prediction_vizualization_randInit.jpg')
+plt.savefig('rand_init_denseNN/prey_pred_prediction_vizualization_randInit_withdt.jpg')

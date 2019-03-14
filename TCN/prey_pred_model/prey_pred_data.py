@@ -1,8 +1,6 @@
 import math as m
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.integrate import odeint
-import torch
 
 
 def dfunc(y, t, a=0.25, b=0.12, c=0.0025, d=0.0013):

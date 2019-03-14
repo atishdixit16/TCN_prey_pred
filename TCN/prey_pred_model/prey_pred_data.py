@@ -5,26 +5,15 @@ from scipy.integrate import odeint
 import torch
 
 
-def dfunc(y, t):
-    a = 0.25
-    b = 0.12
-    c = 0.0025
-    d = 0.0013
+def dfunc(y, t, a = 0.25, b = 0.12, c = 0.0025, d = 0.0013):
     # evaluate the right-hand-side at t
     f0 = a * y[0] - c * y[0] * y[1]
     f1 = - b * y[1] + d * y[0] * y[1]
     return [f0, f1]
 
-
-def prey_pred_data(examples, seq_length):
-    N = 6200  # Number of data points
-    if N < (examples+seq_length+1):
-        print('No of examples should be smaller than 2000-seq_length-1')
-        return
-    tmin = 0.0     # starting t value
-    tmax = 200.0   # final t value
-    yinit = [80, 50]      # initial value of x
-    t = np.linspace(tmin, tmax, N)   # time grid
+def prey_pred_data(examples, seq_length, yinit = [80,50], t_range = (0.0, 200)):
+    N = examples+seq_length+1  # Number of data points
+    t = np.linspace(t_range[0], t_range[1], N)   # time grid
     ysol = odeint(dfunc, yinit, t)
     stack_data = torch.zeros(examples, 2, seq_length+1)
     y0 = torch.from_numpy(ysol[:, 0])
@@ -33,31 +22,8 @@ def prey_pred_data(examples, seq_length):
         stack_data[i, 0, :] = y0[i:i+(seq_length + 1)]
         stack_data[i, 1, :] = y1[i:i+(seq_length + 1)]
     X = stack_data[:, :, :-1]
-    Y = stack_data[:, :, -1]
-    return X, Y
-
-
-def prey_pred_data_init_withdt(examples, seq_length, yinit):
-    N = 3000  # Number of data points
-    if N < (examples+seq_length+1):
-        print('No of examples should be smaller than 3000-seq_length-1')
-        return
-    tmin = 0.0     # starting t value
-    tmax = 200.0   # final t value
-    t = np.linspace(tmin, tmax, N)   # time grid
-    ysol = odeint(dfunc, yinit, t)
-    stack_data = torch.zeros(examples, 2, seq_length+2)
-    y0 = torch.from_numpy(ysol[:, 0])
-    y1 = torch.from_numpy(ysol[:, 1])
-    for i in range(examples):
-        stack_data[i, 0, :] = torch.cat(
-            (torch.tensor([(tmax - tmin) / (N-1)]), y0[i:i+(seq_length + 1)].float()), 0)
-        stack_data[i, 1, :] = torch.cat(
-            (torch.tensor([(tmax - tmin) / (N-1)]), y1[i:i+(seq_length + 1)].float()), 0)
-    # X = stack_data[:,:,:-1]
-    # Y = stack_data[:,:,-1]
-    return stack_data
-
+    y = stack_data[:, :, -1]
+    return X, y
 
 def prey_pred_data_init(examples, seq_length, yinit):
     N = 3000  # Number of data points
@@ -100,6 +66,29 @@ def prey_pred_data_randinit(examples, seq_length):
     return X, Y
 
 
+
+def prey_pred_data_init_withdt(examples, seq_length, yinit):
+    N = 3000  # Number of data points
+    if N < (examples+seq_length+1):
+        print('No of examples should be smaller than 3000-seq_length-1')
+        return
+    tmin = 0.0     # starting t value
+    tmax = 200.0   # final t value
+    t = np.linspace(tmin, tmax, N)   # time grid
+    ysol = odeint(dfunc, yinit, t)
+    stack_data = torch.zeros(examples, 2, seq_length+2)
+    y0 = torch.from_numpy(ysol[:, 0])
+    y1 = torch.from_numpy(ysol[:, 1])
+    for i in range(examples):
+        stack_data[i, 0, :] = torch.cat(
+            (torch.tensor([(tmax - tmin) / (N-1)]), y0[i:i+(seq_length + 1)].float()), 0)
+        stack_data[i, 1, :] = torch.cat(
+            (torch.tensor([(tmax - tmin) / (N-1)]), y1[i:i+(seq_length + 1)].float()), 0)
+    # X = stack_data[:,:,:-1]
+    # Y = stack_data[:,:,-1]
+    return stack_data
+
+
 def prey_pred_data_randinit_withdt(examples, seq_length):
     batch_no = 100
     batch_samples = m.floor(examples / batch_no)
@@ -120,20 +109,3 @@ def prey_pred_data_randinit_withdt(examples, seq_length):
     X = full_data[:, :, :-1]
     Y = full_data[:, :, -1]
     return X, Y
-
-# def prey_pred_data_randinit(examples, seq_length):
-#     N = examples + seq_length + 1  # Number of data points
-#     tmin = 0.0     # starting t value
-#     tmax = 200.0   # final t value
-#     yinit = [47,150]      # initial value of x
-#     t  = np.linspace(tmin, tmax, N)   # time grid
-#     ysol = odeint(dfunc, yinit, t)
-#     stack_data  = torch.zeros(examples, 2, seq_length+1)
-#     y0 = torch.from_numpy(ysol[:, 0])
-#     y1 = torch.from_numpy(ysol[:, 1])
-#     for i in range(examples):
-#         stack_data[i,0,:] = y0[i:i+(seq_length + 1)]
-#         stack_data[i,1,:] = y1[i:i+(seq_length + 1)]
-#     X = stack_data[:,:,:-1]
-#     Y = stack_data[:,:,-1]
-#     return X,Y

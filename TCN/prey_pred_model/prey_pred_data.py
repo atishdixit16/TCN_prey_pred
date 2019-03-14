@@ -30,20 +30,19 @@ def prey_pred_data(examples, seq_length, yinit = [80,50], t_range = (0.0, 200), 
     y = stack_data[:, :, -1]
     return X, y
 
-def prey_pred_data_randinit(examples, seq_length):
+def prey_pred_data_randinit(examples, seq_length, yinit = [80,50], t_range = (0.0, 200), add_dt = False):
     batch_no = 100
     batch_samples = m.floor(examples / batch_no)
     full_data = np.zeros((examples, 2, seq_length+1))
     u_min = 50
     u_max = 100
     for i in range(batch_no):
-        yinit = [u_min + (u_max-u_min)*torch.rand(1), u_min + (u_max-u_min)*torch.rand(1)]
+        yinit = [u_min + (u_max-u_min)*np.random.rand(1), u_min + (u_max-u_min)*np.random.rand(1)]
         batch_data = prey_pred_data(batch_samples, seq_length, yinit = yinit)
         batch_data = np.concatenate( ( batch_data[0], batch_data[1].reshape(batch_samples, 2 , 1) ) , axis=2 )
         full_data[batch_samples*i:(batch_samples*(i+1))] = batch_data
     if examples % batch_no:
-        batch_data = prey_pred_data(
-            (examples % batch_no), seq_length, yinit = yinit)
+        batch_data = prey_pred_data( (examples % batch_no), seq_length, yinit = yinit)
         batch_data = np.concatenate( ( batch_data[0], batch_data[1].reshape(batch_samples, 2 , 1) ) , axis=2 )
         full_data[(batch_no*(i+1)):] = batch_data
     full_data = full_data[np.random.permutation(examples)]

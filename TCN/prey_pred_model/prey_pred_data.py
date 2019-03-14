@@ -10,7 +10,7 @@ def dfunc(y, t, a=0.25, b=0.12, c=0.0025, d=0.0013):
     return [f0, f1]
 
 
-def prey_pred_data(examples, seq_length, yinit=[80, 50], t_range=(0.0, 200.0), add_dt=False):
+def prey_pred_data_constint(examples, seq_length, yinit=[80, 50], t_range=(0.0, 200.0), add_dt=False):
     # create a time series format of the solutions of ODE
 
     # ODE calculation
@@ -52,7 +52,6 @@ def prey_pred_data_randinit(examples, seq_length, yinit=[80, 50], t_range=(0.0, 
     # paramters of uniform distribution for random initialization
     u_min = 50
     u_max = 100
-
 
     for i in range(batch_no):
         y0, y1 = u_min + (u_max-u_min)*np.random.rand(1), u_min + \

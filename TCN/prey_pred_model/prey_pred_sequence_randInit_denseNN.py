@@ -53,8 +53,8 @@ n_classes = 2
 batch_size = args.batch_size
 seq_length = args.seq_len 
 epochs = args.epochs
-total_examples = 1500
-training_examples = 800
+total_examples = 6000
+training_examples = 3000
 
 print(args)
 print("Producing data...")
@@ -71,7 +71,7 @@ dropout = args.dropout
 # # with dt
 # model = DenseNN_init(seq_length + 1)
 # without dt
-model = DenseNN_init(seq_length)
+model = DenseNN(seq_length)
 
 
 if args.cuda:

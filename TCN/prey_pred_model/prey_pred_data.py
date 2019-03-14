@@ -15,7 +15,7 @@ def dfunc (y, t):
     return [f0, f1]
 
 def prey_pred_data(examples, seq_length):
-    N = 3000  # Number of data points
+    N = 6200  # Number of data points
     if N < (examples+seq_length+1):
         print('No of examples should be smaller than 2000-seq_length-1')
         return

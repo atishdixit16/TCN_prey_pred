@@ -15,9 +15,9 @@ def prey_pred_data(examples, seq_length, yinit = [80,50], t_range = (0.0, 200)):
     N = examples+seq_length+1  # Number of data points
     t = np.linspace(t_range[0], t_range[1], N)   # time grid
     ysol = odeint(dfunc, yinit, t)
-    stack_data = torch.zeros(examples, 2, seq_length+1)
-    y0 = torch.from_numpy(ysol[:, 0])
-    y1 = torch.from_numpy(ysol[:, 1])
+    stack_data = np.zeros(examples, 2, seq_length+1)
+    y0 = ysol[:, 0]
+    y1 = ysol[:, 1]
     for i in range(examples):
         stack_data[i, 0, :] = y0[i:i+(seq_length + 1)]
         stack_data[i, 1, :] = y1[i:i+(seq_length + 1)]

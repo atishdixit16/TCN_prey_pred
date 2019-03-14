@@ -11,16 +11,21 @@ def dfunc(y, t, a = 0.25, b = 0.12, c = 0.0025, d = 0.0013):
     f1 = - b * y[1] + d * y[0] * y[1]
     return [f0, f1]
 
-def prey_pred_data(examples, seq_length, yinit = [80,50], t_range = (0.0, 200)):
+def prey_pred_data(examples, seq_length, yinit = [80,50], t_range = (0.0, 200), add_dt = False):
     N = examples+seq_length+1  # Number of data points
     t = np.linspace(t_range[0], t_range[1], N)   # time grid
     ysol = odeint(dfunc, yinit, t)
-    stack_data = np.zeros((examples, 2, seq_length+1))
+    stack_data = np.zeros((examples, 2, seq_length+1+add_dt))
     y0 = ysol[:, 0]
     y1 = ysol[:, 1]
     for i in range(examples):
-        stack_data[i, 0, :] = y0[i:i+(seq_length + 1)]
-        stack_data[i, 1, :] = y1[i:i+(seq_length + 1)]
+        if add_dt:
+            dt = ( t_range[1] - t_range[0] ) / (N-1)
+            stack_data[i, 0, :] = np.concatenate ( ( np.array([dt]) ,  y0[i:i+(seq_length + 1)] ) )
+            stack_data[i, 1, :] = np.concatenate ( ( np.array([dt]) ,  y1[i:i+(seq_length + 1)] ) )
+        else:
+            stack_data[i, 0, :] = y0[i:i+(seq_length + 1)]
+            stack_data[i, 1, :] = y1[i:i+(seq_length + 1)]
     X = stack_data[:, :, :-1]
     y = stack_data[:, :, -1]
     return X, y

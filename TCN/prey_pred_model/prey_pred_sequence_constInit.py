@@ -54,11 +54,11 @@ training_examples = 800
 
 print(args)
 print("Producing data...")
-data = prey_pred_data(total_examples, seq_length)
-X_train = data[0][:training_examples,:,:]
-Y_train = data[1][:training_examples,:]
-X_test = data[0][training_examples:,:,:]
-Y_test = data[1][training_examples:,:]
+data = prey_pred_data_constint(total_examples, seq_length)
+X_train = torch.from_numpy ( data[0][:training_examples,:,:] ).float()
+Y_train = torch.from_numpy ( data[1][:training_examples,:]).float()
+X_test = torch.from_numpy ( data[0][training_examples:,:,:]).float()
+Y_test = torch.from_numpy ( data[1][training_examples:,:]).float()
 
 # Note: We use a very simple setting here (assuming all levels have the same # of channels.
 channel_sizes = [args.nhid]*args.levels

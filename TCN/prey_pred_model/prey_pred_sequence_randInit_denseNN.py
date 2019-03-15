@@ -59,10 +59,10 @@ training_examples = 3000
 print(args)
 print("Producing data...")
 data = prey_pred_data_randinit(total_examples, seq_length)
-X_train = data[0][:training_examples,:,:]
-Y_train = data[1][:training_examples,:]
-X_test = data[0][training_examples:,:,:]
-Y_test = data[1][training_examples:,:]
+X_train = torch.from_numpy(data[0][:training_examples,:,:] ).float()
+Y_train = torch.from_numpy( data[1][:training_examples,:] ).float()
+X_test = torch.from_numpy (data[0][training_examples:,:,:]).float()
+Y_test = torch.from_numpy ( data[1][training_examples:,:] ).float()
 
 # Note: We use a very simple setting here (assuming all levels have the same # of channels.
 channel_sizes = [args.nhid]*args.levels
@@ -145,8 +145,8 @@ plt.savefig('rand_init_denseNN/prey_pred_losses_randInit.jpg')
 # data = (x,y)
 # X_test = X[training_examples:,:,:]
 # without dt
-data = prey_pred_data(total_examples, seq_length)
-X_test = data[0][training_examples:,:,:]
+data = prey_pred_data_constinit(total_examples, seq_length)
+X_test = data[0][training_examples:,:,:].float()
 if args.cuda:
     X_test = X_test.cuda()
 model.eval()
@@ -156,8 +156,8 @@ model.eval()
 output = model(X_test, seq_length )
 
 plt.figure()
-plt.plot(range(total_examples),data[1][:,0].cpu().numpy())
-plt.plot(range(total_examples),data[1][:,1].cpu().numpy())
+plt.plot(range(total_examples),data[1][:,0])
+plt.plot(range(total_examples),data[1][:,1])
 plt.plot(range(training_examples,total_examples),output[:,0].cpu().detach().numpy(), '--')
 plt.plot(range(training_examples,total_examples),output[:,1].cpu().detach().numpy(), '--')
 plt.grid(True)

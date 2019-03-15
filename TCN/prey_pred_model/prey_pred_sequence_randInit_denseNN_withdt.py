@@ -58,11 +58,11 @@ training_examples = 800
 
 print(args)
 print("Producing data...")
-data = prey_pred_data_randinit_withdt(total_examples, seq_length)
-X_train = data[0][:training_examples,:,:]
-Y_train = data[1][:training_examples,:]
-X_test = data[0][training_examples:,:,:]
-Y_test = data[1][training_examples:,:]
+data = prey_pred_data_constinit(total_examples, seq_length, add_dt=True)
+X_train = torch.from_numpy(data[0][:training_examples,:,:] ).float()
+Y_train = torch.from_numpy( data[1][:training_examples,:] ).float()
+X_test = torch.from_numpy (data[0][training_examples:,:,:]).float()
+Y_test = torch.from_numpy ( data[1][training_examples:,:] ).float()
 
 # Note: We use a very simple setting here (assuming all levels have the same # of channels.
 channel_sizes = [args.nhid]*args.levels
@@ -139,7 +139,7 @@ plt.legend(['Training Loss','Validation Loss'])
 plt.savefig('rand_init_denseNN/prey_pred_losses_randInit_withdt.jpg')
 
 # with dt
-stack_data = prey_pred_data_init_withdt(total_examples, seq_length, [80,50])
+stack_data = prey_pred_data_constinit(total_examples, seq_length, yinit=[80,50])
 X = stack_data[:,:,:-1]
 y = stack_data[:,:,-1]
 data = (x,y)

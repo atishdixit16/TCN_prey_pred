@@ -56,7 +56,7 @@ training_examples = 800
 
 print(args)
 print("Producing data...")
-data = prey_pred_data_constint(total_examples, seq_length)
+data = prey_pred_data_constinit(total_examples, seq_length)
 X_train = torch.from_numpy ( data[0][:training_examples,:,:] ).float()
 Y_train = torch.from_numpy ( data[1][:training_examples,:]).float()
 X_test = torch.from_numpy ( data[0][training_examples:,:,:]).float()

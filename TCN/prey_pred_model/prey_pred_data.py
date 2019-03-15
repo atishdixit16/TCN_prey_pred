@@ -10,11 +10,10 @@ def dfunc(y, t, a=0.25, b=0.12, c=0.0025, d=0.0013):
     return [f0, f1]
 
 
-def prey_pred_data_constinit(examples, seq_length, yinit=[80, 50], t_range=(0.0, 200.0), add_dt=False):
+def prey_pred_data_constinit(examples, seq_length, yinit=[80, 50], t_range=(0.0, 200.0), add_dt=False, N=3000):
     # create a time series format of the solutions of ODE
 
     # ODE calculation
-    N = examples+seq_length+1  # Number of data points
     t = np.linspace(t_range[0], t_range[1], N)   # time grid
     ysol = odeint(dfunc, yinit, t)
     y0 = ysol[:, 0]
@@ -41,7 +40,7 @@ def prey_pred_data_constinit(examples, seq_length, yinit=[80, 50], t_range=(0.0,
     return X, y
 
 
-def prey_pred_data_randinit(examples, seq_length, yinit=[80, 50], t_range=(0.0, 200), add_dt=False):
+def prey_pred_data_randinit(examples, seq_length, yinit=[80, 50], t_range=(0.0, 200.0), add_dt=False):
     # create times eries data of ODE solutions with different random initialization batch
     batch_no = 100
     batch_samples = m.floor(examples / batch_no)
@@ -63,8 +62,10 @@ def prey_pred_data_randinit(examples, seq_length, yinit=[80, 50], t_range=(0.0, 
             (batch_data[0], batch_data[1].reshape(batch_samples, 2, 1)), axis=2)
         full_data[batch_samples*i:(batch_samples*(i+1))] = batch_data
     if examples % batch_no:
+        y0, y1 = u_min + (u_max-u_min)*np.random.rand(1), u_min + \
+            (u_max-u_min)*np.random.rand(1)
         batch_data = prey_pred_data_constinit(
-            (examples % batch_no), seq_length, yinit=yinit, add_dt=add_dt)
+            (examples % batch_no), seq_length, yinit=[y0.item(), y1.item()], add_dt=add_dt)
         # Concatenate X, y output from prey_pred_data 
         batch_data = np.concatenate(
             (batch_data[0], batch_data[1].reshape(batch_samples, 2, 1)), axis=2)

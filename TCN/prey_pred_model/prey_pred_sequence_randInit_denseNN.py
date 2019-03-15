@@ -145,8 +145,8 @@ plt.savefig('rand_init_denseNN/prey_pred_losses_randInit.jpg')
 # data = (x,y)
 # X_test = X[training_examples:,:,:]
 # without dt
-data = prey_pred_data_constinit(total_examples, seq_length)
-X_test = data[0][training_examples:,:,:].float()
+data = prey_pred_data_constinit(total_examples, seq_length, N=6200)
+X_test = torch.from_numpy(data[0][training_examples:,:,:]).float()
 if args.cuda:
     X_test = X_test.cuda()
 model.eval()

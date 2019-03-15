@@ -139,25 +139,16 @@ plt.legend(['Training Loss','Validation Loss'])
 plt.savefig('rand_init_denseNN/prey_pred_losses_randInit_withdt.jpg')
 
 # with dt
-stack_data = prey_pred_data_constinit(total_examples, seq_length, yinit=[80,50])
-X = stack_data[:,:,:-1]
-y = stack_data[:,:,-1]
-data = (x,y)
-X_test = X[training_examples:,:,:]
-## without dt
-#data = prey_pred_data_init_withdt(total_examples, seq_length, [80,50])
-# X_test = X[training_examples:,:,:]
+data = prey_pred_data_constinit(total_examples, seq_length, yinit=[80,50], add_dt=True)
+X_test = torch.from_numpy ( data[0][training_examples:,:,:] )
 if args.cuda:
-    X_test = X_test.cuda()
+    X_test = X_test.cuda().float()
 model.eval()
-# with dt
 output = model(X_test, seq_length + 1)
-# # without dt
-# output = model(X_test, seq_length )
 
 plt.figure()
-plt.plot(range(total_examples),data[1][:,0].cpu().numpy())
-plt.plot(range(total_examples),data[1][:,1].cpu().numpy())
+plt.plot(range(total_examples),data[1][:,0])
+plt.plot(range(total_examples),data[1][:,1])
 plt.plot(range(training_examples,total_examples),output[:,0].cpu().detach().numpy(), '--')
 plt.plot(range(training_examples,total_examples),output[:,1].cpu().detach().numpy(), '--')
 plt.grid(True)

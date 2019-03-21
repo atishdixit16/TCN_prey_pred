@@ -20,7 +20,7 @@ parser.add_argument('--dropout', type=float, default=0.0,
                     help='dropout applied to layers (default: 0.0)')
 parser.add_argument('--clip', type=float, default=-1,
                     help='gradient clip, -1 means no clip (default: -1)')
-parser.add_argument('--epochs', type=int, default=12000,
+parser.add_argument('--epochs', type=int, default=500,
                     help='upper epoch limit (default: 100)')
 parser.add_argument('--ksize', type=int, default=7,
                     help='kernel size (default: 7)')

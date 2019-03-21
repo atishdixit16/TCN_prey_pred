@@ -3,7 +3,7 @@ import numpy as np
 from scipy.integrate import odeint
 import torch
 
-# dummy comment
+# check a dummy commit after the merge
 
 def dfunc(y, t, a=0.25, b=0.12, c=0.0025, d=0.0013):
     # evaluate the right-hand-side of ODE at t

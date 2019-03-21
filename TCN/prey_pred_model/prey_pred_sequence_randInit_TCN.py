@@ -19,7 +19,7 @@ parser.add_argument('--dropout', type=float, default=0.0,
                     help='dropout applied to layers (default: 0.0)')
 parser.add_argument('--clip', type=float, default=-1,
                     help='gradient clip, -1 means no clip (default: -1)')
-parser.add_argument('--epochs', type=int, default=6000,
+parser.add_argument('--epochs', type=int, default=5000,
                     help='upper epoch limit (default: 100)')
 parser.add_argument('--ksize', type=int, default=7,
                     help='kernel size (default: 7)')
@@ -58,10 +58,10 @@ training_examples = 800
 print(args)
 print("Producing data...")
 data = prey_pred_data_randinit(total_examples, seq_length)
-X_train = data[0][:training_examples,:,:]
-Y_train = data[1][:training_examples,:]
-X_test = data[0][training_examples:,:,:]
-Y_test = data[1][training_examples:,:]
+X_train = torch.from_numpy(data[0][:training_examples,:,:] ).float()
+Y_train = torch.from_numpy( data[1][:training_examples,:] ).float()
+X_test = torch.from_numpy (data[0][training_examples:,:,:]).float()
+Y_test = torch.from_numpy ( data[1][training_examples:,:] ).float()
 
 # Note: We use a very simple setting here (assuming all levels have the same # of channels.
 channel_sizes = [args.nhid]*args.levels
@@ -127,18 +127,18 @@ plt.title('Trainng and Validation Losses')
 plt.legend(['Training Loss','Validation Loss'])
 plt.savefig('rand_init/prey_pred_losses_randInit.jpg')
 
-data = prey_pred_data(total_examples, seq_length)
-X_test = data[0][training_examples:,:,:]
+data = prey_pred_data_constinit(total_examples, seq_length)
+X_test = torch.from_numpy(data[0]).float()
 if args.cuda:
     X_test = X_test.cuda()
 model.eval()
 output = model(X_test)
 
 plt.figure()
-plt.plot(range(total_examples),data[1][:,0].cpu().numpy())
-plt.plot(range(total_examples),data[1][:,1].cpu().numpy())
-plt.plot(range(training_examples,total_examples),output[:,0].cpu().detach().numpy(), '--')
-plt.plot(range(training_examples,total_examples),output[:,1].cpu().detach().numpy(), '--')
+plt.plot(range(total_examples),data[1][:,0])
+plt.plot(range(total_examples),data[1][:,1])
+plt.plot(range(total_examples),output[:,0].cpu().detach().numpy(), '--')
+plt.plot(range(total_examples),output[:,1].cpu().detach().numpy(), '--')
 plt.grid(True)
 plt.legend(['True prey population', 'True predator population', 'Predicted prey population', 'Predicted predator population'] ,loc='center left')
 plt.savefig('rand_init/prey_pred_prediction_vizualization_randInit.jpg')

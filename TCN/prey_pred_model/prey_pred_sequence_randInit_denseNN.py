@@ -1,13 +1,16 @@
-import torch
 import argparse
+import os
+import numpy as np
+
+import torch
 import torch.optim as optim
 import torch.nn.functional as F
 from TCN.prey_pred_model.model import TCN
 from TCN.prey_pred_model.utils import data_generator
-from TCN.prey_pred_model.prey_pred_data import *
-from TCN.prey_pred_model.dense_model import *
+from TCN.prey_pred_model.prey_pred_data import  prey_pred_data_randinit, prey_pred_data_constinit
+from TCN.prey_pred_model.dense_model import DenseNN
+
 import matplotlib.pyplot as plt
-import os
 
 os.system('mkdir rand_init_denseNN')
 
